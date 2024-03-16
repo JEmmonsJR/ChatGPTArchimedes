@@ -1,5 +1,6 @@
 import openai
 import json
+from openai import OpenAI
 
 # Load API key from JSON file
 with open("D:\Code Projects\ChatGPTArchimedes\key\keys.json") as fi:
@@ -8,17 +9,15 @@ with open("D:\Code Projects\ChatGPTArchimedes\key\keys.json") as fi:
 API_KEY = credentials['apikey']
 
 # Set OpenAI API key
-openai.api_key = API_KEY
+client = OpenAI(api_key=API_KEY)
 
 # Define function to interact with Archimedes
 def ask_archimedes(question):
-    response = openai.Completion.create(
-        model="text-davinci-002",  # Use "text-davinci-002" model
+    response = client.completions.create(model="text-davinci-002",  # Use "text-davinci-002" model
         prompt=question + "\nArchimedes:",
         temperature=0.7,
-        max_tokens=150
-    )
-    return response["choices"][0]["text"].strip()
+        max_tokens=150)
+    return response.choices[0].text.strip()
 
 # Main function for user interaction
 def main():
