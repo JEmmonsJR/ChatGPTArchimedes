@@ -7,6 +7,7 @@ recognizer = sr.Recognizer()
 # Initialize the text-to-speech engine
 engine = pyttsx3.init()
 
+
 def speak(text):
     """
     Function to speak the given text.
@@ -18,7 +19,7 @@ def listen():
     """
     Function to listen for audio and return the recognized text.
     """
-    with sr.Microphone() as source:
+    with sr.Microphone(device_index=1) as source:
         print("Listening...")
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source)
