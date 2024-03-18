@@ -2,6 +2,7 @@ import speech_recognition as sr
 import pyttsx3
 import json
 import requests
+import webbrowser
 
 # Initialize the speech recognizer
 recognizer = sr.Recognizer()
@@ -22,6 +23,12 @@ def speak(text):
     """
     engine.say(text)
     engine.runAndWait()
+
+def open_youtube():
+    """
+    Function to open YouTube in the default web browser.
+    """
+    webbrowser.open("https://www.youtube.com")
 
 def listen():
     """
@@ -74,9 +81,12 @@ def archimedes():
         elif "how are you" in query:
             speak("I'm doing well, thank you for asking!")
         elif "weather" in query:
-            city = query.split("weather in ")[-1]
+            city = query.split("weather in ")[-1].capitalize()
             response = get_weather(city)
             speak(response)
+        elif "open youtube" in query:
+            speak("Opening YouTube.")
+            open_youtube()
         elif "bye" in query:
             speak("Goodbye!")
             break
