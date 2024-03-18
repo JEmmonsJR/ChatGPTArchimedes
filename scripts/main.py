@@ -1,11 +1,19 @@
 import speech_recognition as sr
 import pyttsx3
+import json
+import requests
 
 # Initialize the speech recognizer
 recognizer = sr.Recognizer()
 
 # Initialize the text-to-speech engine
 engine = pyttsx3.init()
+
+# Load API key from JSON file
+with open("D:\Code Projects\ChatGPTArchimedes\key\keys.json") as fi:
+    credentials = json.load(fi)
+
+WEATHER_KEY = credentials['weather_key']
 
 
 def speak(text):
@@ -36,6 +44,22 @@ def listen():
         print(f"Could not request results; {e}")
         return ""
 
+def get_weather(city):
+    """
+    Function to fetch weather information for a given city.
+    """
+    api_key = WEATHER_KEY
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}'
+    response = requests.get(url)
+    data = response.json()
+    if data['cod'] == 200:
+        weather_desc = data['weather'][0]['description']
+        temperature = data['main']['temp']
+        temperature_celsius = temperature - 273.15  # Convert temperature to Celsius
+        return f"The weather in {city} is {weather_desc} with a temperature of {temperature_celsius:.2f}°C."
+    else:
+        return "Sorry, I couldn't fetch the weather information for that city." 
+
 def archimedes():
     """
     Main function for Archimedes voice assistant.
@@ -49,6 +73,10 @@ def archimedes():
             speak("Hello! How can I help you?")
         elif "how are you" in query:
             speak("I'm doing well, thank you for asking!")
+        elif "weather" in query:
+            city = query.split("weather in ")[-1]
+            response = get_weather(city)
+            speak(response)
         elif "bye" in query:
             speak("Goodbye!")
             break
